@@ -1,4 +1,5 @@
 import { getPosts, getMorePosts, updatePost, deletePost, reportPost, likePost } from "./post";
+import {signUp, login, logout, checkVerifyCode, getVerifyCode, changeInfoAfterSignUp} from "./auth";
 
 export const getType = (reduxAction) => {
     return reduxAction().type;
@@ -10,5 +11,15 @@ export const actions = {
     updatePost,
     deletePost,
     reportPost,
-    likePost
+    likePost,
+    
+
+    signUp,
+    login,
+    logout,
+    checkVerifyCode,
+    getVerifyCode,
+    changeInfoAfterSignUp
+
+    
 }

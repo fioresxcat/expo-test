@@ -7,4 +7,7 @@ export const globalState = {
         isLoading: false,
         error: false
     },
+    auth: {
+        authData: {}
+    }
 }

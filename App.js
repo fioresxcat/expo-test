@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createStore, applyMiddleware } from 'redux'
 import createSagaMiddleware from 'redux-saga'
+
 import { Provider } from 'react-redux';
 import rootReducer from './redux/reducers';
 
@@ -22,6 +23,26 @@ import mySaga from './redux/saga';
 import { EditPostPage } from './components/EditPostPage';
 import { SlideUpTransition } from './constant';
 
+import RemoveAccount from './components/Long/Pages/SignIn/components/RemoveAccount';
+import SignInLoading from './components/Long/Pages/SignIn/components/SignInLoading';
+import SaveAccount from './components/Long/Pages/SignIn/components/SaveAccount';
+import CreateAccount from './components/Long/Pages/SignUp/components/CreateAccount';
+import SetName from './components/Long/Pages/SignUp/components/SetName';
+import SetBirth from './components/Long/Pages/SignUp/components/SetBirth';
+import SetPhone from './components/Long/Pages/SignUp/components/SetPhone';
+import SetPassword from './components/Long/Pages/SignUp/components/SetPassword';
+import TermsPrivacy from './components/Long/Pages/SignUp/components/TermsPrivacy';
+import Status from './components/Long/Pages/SignUp/components/Status';
+import Service from './components/Long/Pages/SignUp/components/Service';
+import Data from './components/Long/Pages/SignUp/components/Data';
+import Cookie from './components/Long/Pages/SignUp/components/Cookie';
+import ConfirmCode from './components/Long/Pages/SignUp/components/ConfirmCode';
+import NoteAccount from './components/Long/Pages/SignUp/components/NoteAccount';
+import SaveInfo from './components/Long/Pages/SignUp/components/SaveInfo';
+import EnterPassWord from './components/Long/Pages/SignIn/components/EnterPassword';
+import AddAvatar from './components/Long/Pages/SignUp/components/AddAvatar';
+
+
 const Stack = createNativeStackNavigator();
 const statusBarHeight = Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
 
@@ -36,7 +57,7 @@ export default function App() {
           <View style={{ height: statusBarHeight }}></View>
 
           <NavigationContainer> 
-            <Stack.Navigator initialRouteName="HomePage" screenOptions={screenOptions}> 
+            <Stack.Navigator initialRouteName="RemoveAccount" screenOptions={screenOptions}> 
               <Stack.Group>
                 <Stack.Screen name="Landing" component={Landing} />
                 <Stack.Screen name="Report" component={Report} />
@@ -47,6 +68,24 @@ export default function App() {
                 <Stack.Screen name='ListPostPage' component={ListPost} />
                 <Stack.Screen name='CommentPage' component={CommentPage} />
                 <Stack.Screen name='EditPostPage' component={EditPostPage} />
+                <Stack.Screen name='RemoveAccount' component={RemoveAccount} />
+                <Stack.Screen name='SignInLoading' component={SignInLoading} />
+                <Stack.Screen name='SaveAccount' component={SaveAccount} />
+                <Stack.Screen name='CreateAccount' component={CreateAccount} />
+                <Stack.Screen name='SetName' component={SetName} />
+                <Stack.Screen name='SetBirth' component={SetBirth} />
+                <Stack.Screen name='SetPhone' component={SetPhone} />
+                <Stack.Screen name='SetPassword' component={SetPassword} />
+                <Stack.Screen name='TermsPrivacy' component={TermsPrivacy} />
+                <Stack.Screen name='Status' component={Status} />
+                <Stack.Screen name='Service' component={Service} />
+                <Stack.Screen name='Data' component={Data} />
+                <Stack.Screen name='Cookie' component={Cookie} />
+                <Stack.Screen name='ConfirmCode' component={ConfirmCode} />
+                <Stack.Screen name='NoteAccount' component={NoteAccount} />
+                <Stack.Screen name='SaveInfo' component={SaveInfo} />
+                <Stack.Screen name='EnterPassWord' component={EnterPassWord} />
+                <Stack.Screen name='AddAvatar' component={AddAvatar} />
               </Stack.Group>
 
               <Stack.Group screenOptions={{ presentation: 'modal' }}>
