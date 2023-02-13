@@ -37,7 +37,7 @@ export const fetchLogin = (payload) => {
         }
     })
     .then(response => {
-        console.log(response.data);
+        console.log('response from login api: ', response);
         return response.data;
     })
 };
