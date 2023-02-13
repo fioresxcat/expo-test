@@ -37,7 +37,7 @@ const SaveInfo = ({ navigation }) => {
                 </Image>
                 <Image source={require('../../../assets/image/phone.png')} style={{ width: 380, height: 670, position: 'absolute', top: '20%' }}></Image>
                 <Image source={authState.authData.avatar_url ? {uri: authState.authData.avatar_url} : require('../../../assets/image/default_avatar.png')} style={{ width: 120, height: 120, position: 'absolute', top: '50%' }}></Image>
-                <Text style={{ position: 'absolute', top: '68%', fontSize: 24 }}>{authState.authData.name}</Text>
+                <Text style={{ position: 'absolute', top: '68%', left: '35%', fontSize: 24 }}>{authState.authData.name}</Text>
                 <View style={styles.buttonWrapper}>
                     <TouchableOpacity activeOpacity={0.7} style={styles.buttonNo} onPress={() => navigation.navigate('LogOut')}>
                         <Text style={styles.buttonTitle}>Lúc khác</Text>

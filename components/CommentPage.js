@@ -15,6 +15,7 @@ import {
     MaterialCommunityIcons
 } from '@expo/vector-icons'
 import { concat } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
 
 const Container = styled.View`
@@ -66,7 +67,7 @@ const CommentPage = ({route, navigation}) => {
     const [numLike, setNumLike] = useState(0)
     const [commentInput, setCommentInput] = useState('')
     const [refreshing, setRefreshing] = useState(false)
-    const mytoken = useState(state => state.auth.authData.data.token)
+    const mytoken = useSelector(state => state.auth.authData.data.token)
     const postID = route.params.postID
 
     // console.log(postID)

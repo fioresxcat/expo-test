@@ -16,7 +16,7 @@ const RemoveAccount = ({ navigation }) => {
     const [password, setPassword] = useState('')
     const [phoneError, setPhoneError] = useState('')
     const [passwordError, setPasswordError] = useState('')
-    const curState = useSelector(state => state)
+    // const curState = useSelector(state => state)
     // const mytoken = useSelector(state => {
     //     if (state.auth.authData.data.token) {
     //         return state.auth.authData.data.token
@@ -24,7 +24,7 @@ const RemoveAccount = ({ navigation }) => {
     //         return null
     //     }
     // })
-    console.log('current state in removeaccount: ', curState)
+    // console.log('current state in removeaccount: ', curState)
     
     const [keyboardVisible, setKeyboardVisible] = useState(false);
 

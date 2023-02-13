@@ -94,11 +94,13 @@ const authReducers = (state = initState, action) => {
                 isLoading: true
             }
         case getType(login.loginSuccess):
+            console.log('payload in login success reducer: ', action.payload)
+            console.log('current authDAta in login success reducer: ', state.authData)
             return {
                 isLoading: false,
                 authData: {
-                    ...action.payload,
-                    ...state.authData
+                    ...state.authData,
+                    data: action.payload
                 }
             }
         case getType(login.loginFailure):

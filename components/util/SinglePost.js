@@ -20,6 +20,7 @@ import { TextInput } from 'react-native'
 import emotionData from '../../assets/data/emotion'
 import { variables } from '../../constant'
 import { Image } from 'react-native'
+import {useSelector} from 'react-redux'
 
 import {
     Entypo,
