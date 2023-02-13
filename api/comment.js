@@ -1,6 +1,6 @@
-import { mytoken, host } from "../constant"
+import {  host } from "../constant"
 
-export const getCommentsApi = async (postID, lastID) => {
+export const getCommentsApi = async (postID, lastID, mytoken) => {
     const numCommentToGet = 10
     let data
     try {
@@ -23,7 +23,7 @@ export const getCommentsApi = async (postID, lastID) => {
     }
 }
 
-export const postCommentsApi = async (postID, comment) => {
+export const postCommentsApi = async (postID, comment, mytoken) => {
     const numCommentToGet = 10
     let data
     try {

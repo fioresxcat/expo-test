@@ -49,7 +49,7 @@ const SignInLoading = ({ navigation }) => {
 
     else {
         setTimeout(() => {
-            navigation.navigate('LogOut')
+            navigation.navigate('Landing')
         }, 3000)
         
         return (

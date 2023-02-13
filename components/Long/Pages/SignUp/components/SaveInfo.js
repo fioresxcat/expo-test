@@ -8,8 +8,8 @@ import { authState$ } from '../../../../../redux/selectors'
 
 const SaveInfo = ({ navigation }) => {
     const posAnim = useRef(new Animated.Value(1000)).current
-    const getAuthData = useSelector(authState$)
-    console.log(getAuthData)
+    const authState = useSelector(authState$)
+    console.log(authState)
     
         Animated.timing(
             posAnim,
@@ -36,13 +36,13 @@ const SaveInfo = ({ navigation }) => {
                     style={{ width: 50, height: 50, zIndex: 2, position: 'absolute', top: '40%' }}>
                 </Image>
                 <Image source={require('../../../assets/image/phone.png')} style={{ width: 380, height: 670, position: 'absolute', top: '20%' }}></Image>
-                <Image source={require('../../../assets/image/default_avatar.png')} style={{ width: 80, height: 80, position: 'absolute', top: '65%', left: '15%' }}></Image>
-                <Text style={{ position: 'absolute', top: '68%', left: '35%', fontSize: 24 }}>{getAuthData.authData.name}</Text>
+                <Image source={authState.authData.avatar_url ? {uri: authState.authData.avatar_url} : require('../../../assets/image/default_avatar.png')} style={{ width: 120, height: 120, position: 'absolute', top: '50%' }}></Image>
+                <Text style={{ position: 'absolute', top: '68%', fontSize: 24 }}>{authState.authData.name}</Text>
                 <View style={styles.buttonWrapper}>
                     <TouchableOpacity activeOpacity={0.7} style={styles.buttonNo} onPress={() => navigation.navigate('LogOut')}>
                         <Text style={styles.buttonTitle}>Lúc khác</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.7} style={styles.buttonYes} onPress={() => navigation.navigate('LogOut')}>
+                    <TouchableOpacity activeOpacity={0.7} style={styles.buttonYes} onPress={() => navigation.navigate('HomePage')}>
                         <Text style={styles.buttonTitle}>OK</Text>
                     </TouchableOpacity>
                 </View>

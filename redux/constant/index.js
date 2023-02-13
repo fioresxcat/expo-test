@@ -8,6 +8,8 @@ export const globalState = {
         error: false
     },
     auth: {
-        authData: {}
+        authData: {
+            data: {}
+        }
     }
 }

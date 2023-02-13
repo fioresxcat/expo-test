@@ -1,11 +1,11 @@
 import axios from "axios"
-import { mytoken, host } from "../constant"
+import { host } from "../constant"
 
 export const getPosts = async (payload) => {
     const numPostToGet = 4
     const numPostFromLastID = 0
 
-    let url = `${host}/post/get_list_posts?token=${mytoken}&lastID=${payload.lastID}&index=${numPostFromLastID}&count=${numPostToGet}`
+    let url = `${host}/post/get_list_posts?token=${payload.mytoken}&lastID=${payload.lastID}&index=${numPostFromLastID}&count=${numPostToGet}`
     try {
         const response = await fetch(url, {
             method: 'POST',
@@ -34,7 +34,7 @@ export const updatePost = async (payload) => {
     const listDelID = JSON.stringify(payload.listDelID)
     const listNewImages = payload.listNewImages
     
-    const url = `${host}/post/edit_post?token=${mytoken}&id=${id}&status=${status}&described=${described}&image_del=${listDelID}`
+    const url = `${host}/post/edit_post?token=${payload.mytoken}&id=${id}&status=${status}&described=${described}&image_del=${listDelID}`
     const formData = new FormData();
     for (let i = 0; i < listNewImages.length; i++) {
         formData.append('image', {
@@ -65,7 +65,7 @@ export const updatePost = async (payload) => {
 
 export const deletePost = async (payload) => {
     const postID = payload.postID
-    const url = `${host}/post/delete_post?token=${mytoken}&id=${postID}`
+    const url = `${host}/post/delete_post?token=${payload.mytoken}&id=${postID}`
     try {
         const response = await fetch(url, {
             method: 'POST',
@@ -90,7 +90,7 @@ export const deletePost = async (payload) => {
 export const reportPost = async (payload) => {
     const {postID, subject, detail} = payload
 
-    const url = `${host}/post/report_post?token=${mytoken}&id=${postID}&subject=${subject}&details=${detail}`
+    const url = `${host}/post/report_post?token=${payload.mytoken}&id=${postID}&subject=${subject}&details=${detail}`
     try {
         const response = await fetch(url, {
             method: 'POST',
@@ -113,7 +113,7 @@ export const reportPost = async (payload) => {
 }
 
 export const likePost = async (payload) => {
-    const {postID} = payload
+    const {postID, mytoken} = payload
     console.log('postID in like post api: ', postID)
 
     const url = `${host}/like/like?token=${mytoken}&id=${postID}`

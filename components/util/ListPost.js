@@ -31,6 +31,9 @@ const ListPost = ({setScrollY}) => {
     const lastID = useSelector(state => state.posts ? (state.posts.data ? state.posts.data.lastID : 0) : 0)
     const error = useSelector(state => state.posts.error)
     const refreshing = useSelector(state => state.posts.isLoading)
+    const mytoken = useSelector(state => state.auth.authData.data.token)
+
+
     const dispatch = useDispatch()
 
     // console.log('posts: ', posts)
@@ -39,7 +42,8 @@ const ListPost = ({setScrollY}) => {
 
     useEffect(() => {
         dispatch(actions.getPosts.getPostsRequest({
-            lastID: lastID
+            lastID: lastID,
+            mytoken: mytoken
         }))
         // console.log('initial lastID: ', lastID)
     }, [dispatch]);
@@ -47,14 +51,16 @@ const ListPost = ({setScrollY}) => {
 
     const handleRefresh = () => {
         dispatch(actions.getPosts.getPostsRequest({
-            lastID: 0
+            lastID: 0,
+            mytoken: mytoken
         }))
     }
 
     const getMorePosts = (info) => {
         console.log('loading more')
         dispatch(actions.getMorePosts.getMorePostsRequest({
-            lastID: lastID
+            lastID: lastID,
+            mytoken: mytoken
         }))
     }
 

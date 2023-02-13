@@ -9,6 +9,8 @@ import {
 	MaterialCommunityIcons
 } from '@expo/vector-icons'
 
+import { useSelector } from 'react-redux'
+
 import Avatar from './Avatar'
 
 const Container = styled.TouchableOpacity`
@@ -59,10 +61,11 @@ const BottomDivider = styled.View`
 `
 
 const WhatsOnYourMind = () => {
+	const avatar_url = useSelector(state => state.auth.authData.avatar_url)
 	return (
 			<Container>
 				<Row>
-					<Avatar source={require('../../assets/fb1.png')} online={true} story={true} />
+					<Avatar source={avatar_url ? {uri: avatar_url} : require('../Long/assets/image/default_avatar.png')} online={true} story={true} />
 					<VerticalDivider></VerticalDivider>
 					<Input>Bạn đang nghĩ gì ?</Input>
 				</Row>

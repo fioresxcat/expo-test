@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const URL = 'http://192.168.88.215:5000'   //home
+const URL = 'http://192.168.0.108:5000'   //home
 //const URL = 'http://192.168.108.8:5000'   //company
 
 

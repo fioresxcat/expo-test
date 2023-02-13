@@ -113,6 +113,7 @@ export const EditPostPage = ({navigation, route}) => {
     const [inputFontSize, setInputFontSize] = useState(editPostStyles.input.fontSize)
     const [pickedImages, setPickedImages] = useState(listCurrentImageIDProp)
     const [listImageDelID, setListImageDelID] = useState([])
+    const mytoken = useSelector(state => state.auth.authData.data.token)
 
     const dispatch = useDispatch()
 
@@ -175,7 +176,8 @@ export const EditPostPage = ({navigation, route}) => {
             status: emotion ? (emotion.status ? emotion.status : '') : '',
             described: input,
             listDelID: listImageDelID,
-            listNewImages: newPickedImages
+            listNewImages: newPickedImages,
+            mytoken: mytoken
         }
         dispatch(actions.updatePost.updatePostRequest(updateData))
         navigation.goBack()

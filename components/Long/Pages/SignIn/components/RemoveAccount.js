@@ -3,7 +3,7 @@ import { View, Text, Image, TextInput, TouchableOpacity, Keyboard } from 'react-
 import variables from '../../../BaseStyles/Variables'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
-import * as actions from '../../../../../redux/actions/index'
+import {actions} from '../../../../../redux/actions/index'
 import { authState$ } from '../../../../../redux/selectors' 
 const styles = require('../styles/remove_account')
 
@@ -16,6 +16,15 @@ const RemoveAccount = ({ navigation }) => {
     const [password, setPassword] = useState('')
     const [phoneError, setPhoneError] = useState('')
     const [passwordError, setPasswordError] = useState('')
+    const curState = useSelector(state => state)
+    // const mytoken = useSelector(state => {
+    //     if (state.auth.authData.data.token) {
+    //         return state.auth.authData.data.token
+    //     } else {
+    //         return null
+    //     }
+    // })
+    console.log('current state in removeaccount: ', curState)
     
     const [keyboardVisible, setKeyboardVisible] = useState(false);
 

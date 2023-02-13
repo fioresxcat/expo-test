@@ -52,7 +52,7 @@ const AddAvatar = ({navigation}) => {
                 username: authState.authData.name,
                 uri: image.uri
             }))
-            // navigation.navigate('Welcome')
+            navigation.navigate('SaveInfo')
         }
     }
 

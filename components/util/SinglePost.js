@@ -28,8 +28,6 @@ import {
 } from '@expo/vector-icons'
 
 import Avatar from './Avatar';
-import { mytoken } from '../../constant'
-import { block } from 'react-native-reanimated'
 import { actions } from '../../redux/actions'
 
 const Container = styled.View`
@@ -401,6 +399,7 @@ const SinglePost = (postData) => {
     const [displayIsLiked, setDisplayIsLiked] = useState(isLiked)
     const emotion = utils.getEmotionFromState(postData?.status ? postData.status : '', emotionData)
     const postImage = postData.image ? postData.image.map(item => {return {id: item.id, uri: item.url}}) : []
+    const mytoken = useSelector(state => state.auth.authData.data.token)
 
     const maxPostCharacter = 20
     const dispatch = useDispatch()
@@ -501,17 +500,17 @@ const SinglePost = (postData) => {
     
     const onPostLike = async () => {
         console.log('on Post Like called')
-        dispatch(actions.likePost.likePostRequest({postID: postID}))
+        dispatch(actions.likePost.likePostRequest({postID: postID, mytoken: mytoken}))
     }
 
     const onDeletePost = async () => {
         console.log('id to delete', postData.id)
-        dispatch(actions.deletePost.deletePostRequest({postID: postData.id}))
+        dispatch(actions.deletePost.deletePostRequest({postID: postData.id, mytoken: mytoken}))
         hideDeleteModal()
     }
 
     const onSubmitReport = (postID, selectedTag, detail) => {
-        dispatch(actions.reportPost.reportPostRequest({postID: postID, subject: selectedTag, detail: detail}))
+        dispatch(actions.reportPost.reportPostRequest({postID: postID, subject: selectedTag, detail: detail, mytoken: mytoken}))
     }
     
     const moveToCommentPage = () => {

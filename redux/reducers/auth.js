@@ -74,7 +74,7 @@ const authReducers = (state = initState, action) => {
                 isLoading: false,
                 authData: {
                     ...state.authData,
-                    ...action.payload
+                    ...action.payload,
                 }
             }
         case getType(checkVerifyCode.checkVerifyCodeFailure):

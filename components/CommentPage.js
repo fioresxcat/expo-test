@@ -3,7 +3,6 @@ import styled from 'styled-components/native';
 import React, {Component} from 'react';
 import SingleComment from './util/SingleComment';
 import { useState, useEffect} from 'react';
-import { mytoken } from '../constant';
 import { createIconSet } from '@expo/vector-icons';
 import fontAwesome from '../assets/fonts/fa-regular-400.ttf';
 import { host } from '../constant';
@@ -67,12 +66,13 @@ const CommentPage = ({route, navigation}) => {
     const [numLike, setNumLike] = useState(0)
     const [commentInput, setCommentInput] = useState('')
     const [refreshing, setRefreshing] = useState(false)
+    const mytoken = useState(state => state.auth.authData.data.token)
     const postID = route.params.postID
 
     // console.log(postID)
 
     useEffect(() => {
-        getCommentsApi(postID, lastID).then(data => {
+        getCommentsApi(postID, lastID, mytoken).then(data => {
             if (data.comments) {
                 setComments(data.comments)
                 setLastID(data.lastID)
@@ -85,7 +85,7 @@ const CommentPage = ({route, navigation}) => {
 
     const getMoreComments = async () => {
         try {
-            const data = await(getCommentsApi(postID, lastID))
+            const data = await(getCommentsApi(postID, lastID, mytoken))
             if (data.comments) {
                 const newComments = data.comments
                 const newLastID = data.lastID
@@ -107,7 +107,7 @@ const CommentPage = ({route, navigation}) => {
             console.log('post comment called')
             try {
                 setCommentInput('')
-                const data = await postCommentsApi(postID, commentInput)
+                const data = await postCommentsApi(postID, commentInput, mytoken)
                 setLastID(data.lastID)
                 setComments(comments.concat([data.comment]))
             } catch (error) {
@@ -118,7 +118,7 @@ const CommentPage = ({route, navigation}) => {
 
     const handleRefresh = () => {
         setRefreshing(true)
-        getCommentsApi(postID, 0).then(data => {
+        getCommentsApi(postID, 0, mytoken).then(data => {
             if (data.comments) {
                 setComments(data.comments)
                 setLastID(data.lastID)
