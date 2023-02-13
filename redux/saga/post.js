@@ -34,9 +34,9 @@ export function* updatePost(current_action) {
     const updateData = current_action.payload
     try {
       const data = yield call(postApi.updatePost, updateData); // call api after action is dispatched by useDispatch() in componenta
-      yield put(actions.updatePost.updatePostSuccess(updateData)); // dispatch action to reducer
+      yield put(actions.updatePost.updatePostSuccess(data.data)); // dispatch action to reducer
     } catch(err) {
-      console.log('error happen, calling updatepostfailure')
+      console.log('error happen, calling updatepostfailure: ', err)
       yield put(actions.updatePost.updatePostFailure(err)); 
     }
 }

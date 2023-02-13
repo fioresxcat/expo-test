@@ -1,7 +1,7 @@
 import { Easing } from "react-native-reanimated";
 
 export const mytoken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZTIwYmZkYTEyZTgwM2FmYWEwMTczMyIsImRhdGVMb2dpbiI6IjIwMjMtMDItMDlUMTU6MDQ6MDAuMjE1WiIsImlhdCI6MTY3NTk1NTA0MCwiZXhwIjoxNzA3NDkxMDQwfQ.I32OxVAPqcgLdJuzvB6oKh9Ppa4w1adS_wNJeAVQZl8'
-export const host = 'http://192.168.0.108:5000/it4788'
+export const host = 'http://192.168.88.215:5000/it4788'
 export const myID = '63e20bfda12e803afaa01733'
 
 export const SlideUpTransition = {

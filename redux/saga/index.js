@@ -9,6 +9,8 @@ function* mySaga() {
     yield takeLatest(actions.deletePost.deletePostRequest, postSaga.deletePost); // getPostsSaga is called when action getPOstRequest is dispatched
     yield takeLatest(actions.reportPost.reportPostRequest, postSaga.reportPost); // getPostsSaga is called when action getPOstRequest is dispatched
     yield takeLatest(actions.likePost.likePostRequest, postSaga.likePost); // getPostsSaga is called when action getPOstRequest is dispatched
+
+    
 }
 
 

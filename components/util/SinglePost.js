@@ -400,12 +400,13 @@ const SinglePost = (postData) => {
     const isLiked = postData.is_liked ? postData.is_liked : false
     const [displayIsLiked, setDisplayIsLiked] = useState(isLiked)
     const emotion = utils.getEmotionFromState(postData?.status ? postData.status : '', emotionData)
+    const postImage = postData.image ? postData.image.map(item => {return {id: item.id, uri: item.url}}) : []
 
     const maxPostCharacter = 20
     const dispatch = useDispatch()
 
     console.log('emotion: ', emotion)
-
+    console.log('postImage 0: ', postImage[0])
     useEffect(() => {
         if (postContent.length > maxPostCharacter) {
             setDisplayPostContent(postContent.substring(0, maxPostCharacter) + '...')
@@ -429,6 +430,73 @@ const SinglePost = (postData) => {
         navigation.navigate('SinglePostView', {
             'postData': postData
         })
+    }
+
+    const displayPostImage = () => {
+        console.log('post image length: ', postImage.length)
+        if (postImage.length == 0) {
+            return null
+        } else if (postImage.length == 1) {
+            return (
+                <TouchableOpacity>
+                    <Image style={{marginTop: 9, width: '100%', height: 300, resizeMode: 'cover'}} source={{uri: postImage[0].uri}}></Image>
+                </TouchableOpacity>
+            )
+        } else if (postImage.length == 2) {
+            return (
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}}>
+                    <TouchableOpacity style={{width: '49.6%'}}>
+                        <Image style={{width: '100%', height: 300, resizeMode: 'cover'}} source={{uri: postImage[0].uri}}></Image>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{width: '49.6%'}}>
+                        <Image style={{width: '100%', height: 300, resizeMode: 'cover'}} source={{uri: postImage[1].uri}}></Image>
+                    </TouchableOpacity>
+                </View> 
+            )
+        } else if (postImage.length == 3) {
+            // display first image in the first column with 50% width, 2 other images in the second column with 50% width, each of them 50% height
+            return (
+                <View style={{flexDirection: 'row', marginTop: 9, justifyContent: 'space-between'}}>
+                    <TouchableOpacity style={{width: '49.6%', borderWidth: 1}}>
+                        <Image style={{width: '100%', height: 300}} source={{uri: postImage[0].uri}}></Image>
+                    </TouchableOpacity>
+
+                    <View style={{width: '49.6%', height: 300, flexDirection: 'column', borderWidth: 1, justifyContent: 'space-between'}}>
+                        <TouchableOpacity style={{height: '49.6%'}}>
+                            <Image style={{width: '100%', height: '100%'}} source={{uri: postImage[1].uri}}></Image>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{height: '49.6%'}}>
+                            <Image style={{width: '100%', height: '100%'}} source={{uri: postImage[2].uri}}></Image>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            )
+        } else if (postImage.length == 4) {
+            return (
+                <View style={{flexDirection: 'row', marginTop: 9, justifyContent: 'space-between'}}>
+                    <View style={{width: '49.6%', height: 300, flexDirection: 'column', justifyContent: 'space-between'}}>
+                        <TouchableOpacity style={{height: '49.6%'}}>
+                            <Image style={{width: '100%', height: '100%'}} source={{uri: postImage[0].uri}}></Image>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{height: '49.6%'}}>
+                            <Image style={{width: '100%', height: '100%'}} source={{uri: postImage[1].uri}}></Image>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={{width: '49.6%', height: 300, flexDirection: 'column', justifyContent: 'space-between'}}>
+                        <TouchableOpacity style={{height: '49.6%'}}>
+                            <Image style={{width: '100%', height: '100%'}} source={{uri: postImage[2].uri}}></Image>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{height: '49.6%'}}>
+                            <Image style={{width: '100%', height: '100%'}} source={{uri: postImage[3].uri}}></Image>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            )
+        }
     }
     
     const onPostLike = async () => {
@@ -550,7 +618,8 @@ const SinglePost = (postData) => {
                 <Text style={{fontSize: 16, fontWeight: "400"}}>{displayPostContent}</Text>
             </Post>
 
-            <Photo source={require('../../assets/fb1.png')} />
+            {/* <Photo source={require('../../assets/fb1.png')} /> */}
+            {displayPostImage()}
 
             <Footer>
                 <FooterCount>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useRoute } from '@react-navigation/native';
 import { View, Text, Dimensions, TouchableOpacity, StyleSheet, Image, TextInput, Keyboard } from 'react-native'
-import Icon from 'react-native-vector-icons/Feather'
+import IconFeather from 'react-native-vector-icons/Feather/'
+import IconAntDesign from 'react-native-vector-icons/AntDesign';
 import { Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import emotionData from '../assets/data/emotion'
@@ -10,8 +11,18 @@ import * as utils from '../utils/utils'
 import { updatePost } from '../api/post';
 import { useDispatch } from 'react-redux';
 import { actions } from '../redux/actions';
-import ImagePicker from 'react-native-image-crop-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
+import { Button } from 'react-native';
+import styled from 'styled-components/native';
+import { KeyboardAvoidingView } from 'react-native';
+import { ScrollView } from 'react-native';
+// import { Feather } from '@expo/vector-icons';
 
+const Divider = styled.View`
+    height: 10px;
+`
 
 const variables = {
     backGround: '#FFFFFF',
@@ -65,9 +76,9 @@ const EmotionModal = ({ hideEmotionModal, setEmotion, emotionModalVisible }) => 
         >
             <View>
                 <View style={emotionModalStyles.header}>
-                    <Icon.Button color={variables.black} name='arrow-left' size={25} style={emotionModalStyles.prevButton}
+                    <IconFeather.Button color={variables.black} name='arrow-left' size={25} style={emotionModalStyles.prevButton}
                         onPress={hideEmotionModal}
-                    ></Icon.Button>
+                    ></IconFeather.Button>
                     <Text style={emotionModalStyles.title}>Bạn đang cảm thấy thế nào</Text>
                 </View>
                 <View style={{paddingTop: 15, paddingBottom: 15, borderBottomColor: variables.blue, borderBottomWidth: 2}}>
@@ -75,7 +86,7 @@ const EmotionModal = ({ hideEmotionModal, setEmotion, emotionModalVisible }) => 
                 </View>
 
                 <View style={{paddingTop: 15, paddingBottom: 15, display: 'flex', flexDirection: 'row', borderBottomColor: '#EDEDED', borderBottomWidth: 1 }}>
-                    <Icon name='search' size={22} style={{paddingLeft: 10, paddingTop: 3}}></Icon>
+                    <IconFeather name='search' size={22} style={{paddingLeft: 10, paddingTop: 3}}></IconFeather>
                     <TextInput placeholder='Tìm kiếm' style={{width: '84%', padding: 0, marginLeft: 10, fontSize: 14, marginRight: 10}}
                     onChangeText={handleFilterChange} value={filter}></TextInput>
                 </View>
@@ -91,6 +102,8 @@ const EmotionModal = ({ hideEmotionModal, setEmotion, emotionModalVisible }) => 
 
 export const EditPostPage = ({navigation, route}) => {
     const postData = route.params.postData
+    console.log('postdata Image: ', postData.image ? postData.image: null)
+    const listCurrentImageIDProp = postData.image ? postData.image.map(item => {return {id: item.id, uri: item.url}}) : []
     const [input, setInput] = useState(route.params.postData?.described)
     const [emotion, setEmotion] = useState(utils.getEmotionFromState(postData?.status ? postData.status : '', emotionData))
     const [emotionModalVisible, setEmotionModalVisible] = useState(false)
@@ -98,11 +111,13 @@ export const EditPostPage = ({navigation, route}) => {
     const [keyboardHeight, setKeyboardHeight] = useState(0);
     const [buttonDisable, setButtonDisable] = useState(false)
     const [inputFontSize, setInputFontSize] = useState(editPostStyles.input.fontSize)
+    const [pickedImages, setPickedImages] = useState(listCurrentImageIDProp)
+    const [listImageDelID, setListImageDelID] = useState([])
+
     const dispatch = useDispatch()
 
     console.log('postData in edit post page: ', postData)
     useEffect(() => {
-        console.log('useEffect in edit post page')
         const showKeyboard = Keyboard.addListener('keyboardDidShow', (e) => {
             setKeyboardVisible(true);
             setKeyboardHeight(e.endCoordinates.height)
@@ -123,21 +138,51 @@ export const EditPostPage = ({navigation, route}) => {
 
     
     const pickImage = async () => {
-        try {
-            const image = await ImagePicker.openPicker({
-                width: 300,
-                height: 400,
-                cropping: true,
-                mediaType: 'photo'
+        if (pickedImages.length < 4) {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
             });
-            console.log(image);
-        } catch (error) {
-            console.error(error);
+        
+            console.log('result: ', result);
+        
+            if (!result.canceled) {
+                console.log('picked images befor: ', pickedImages)
+                const newImage = {uri: result.assets[0].uri}
+                const newPickedImages = pickedImages.concat([newImage])
+                console.log('new picked images: ', newPickedImages)
+                setPickedImages(newPickedImages);
+            }
         }
     };
 
+    const deleteImage = (index) => {
+        const newPickedImages = pickedImages.filter((item, i) => i !== index)
+        setPickedImages(newPickedImages)
+        if (pickedImages[index].id) { // co id thi chi co the la anh fetch tu server
+            const newDelList = listImageDelID.concat(pickedImages[index].id)
+            setListImageDelID(newDelList)
+        }
+    }
+
+    const makePostUpdate = () => {
+        console.log('make post update called..')
+        const newPickedImages = pickedImages.filter(item => !item.id)
+        const updateData = {
+            id: postData.id,
+            status: emotion ? (emotion.status ? emotion.status : '') : '',
+            described: input,
+            listDelID: listImageDelID,
+            listNewImages: newPickedImages
+        }
+        dispatch(actions.updatePost.updatePostRequest(updateData))
+        navigation.goBack()
+    }
 
     const handleTextChange = (value) => {
+        // console.log('picked image uri: ', pickedImages[0].uri)
         setInput(value)
         if (value.length > 0) setButtonDisable(false)
         else setButtonDisable(true)
@@ -157,71 +202,101 @@ export const EditPostPage = ({navigation, route}) => {
         setEmotionModalVisible(false)
     }
 
-    const makePostUpdate = () => {
-        const updateData = {
-            id: postData.id,
-            status: emotion.status,
-            described: input,
-        }
-        dispatch(actions.updatePost.updatePostRequest(updateData))
-        navigation.goBack()
-    }
+
 
     return (
         <View>
             <EmotionModal hideEmotionModal={hideEmotionModal} setEmotion={setEmotion} emotionModalVisible={emotionModalVisible}></EmotionModal>
 
             <View style={editPostStyles.header}>
-                <Icon.Button color={variables.black} name='arrow-left' size={25} style={editPostStyles.prevButton} onPress={navigation.goBack}></Icon.Button>
+                <IconFeather.Button color={variables.black} name='arrow-left' size={25} style={editPostStyles.prevButton} onPress={navigation.goBack}></IconFeather.Button>
                 <Text style={editPostStyles.title}>Chỉnh sửa bài viết</Text>
                 <TouchableOpacity onPress={makePostUpdate} style={buttonDisable ? editPostStyles.addButtonDisable : editPostStyles.addButton}>
                     <Text style={buttonDisable ? { fontWeight: 'bold', fontSize: 16, color: variables.gray } : { fontWeight: 'bold', fontSize: 16, color: 'white' }}>XONG</Text>
                 </TouchableOpacity>
             </View>
 
-            <View style={editPostStyles.accountInfo}>
-                <View style={{ display: 'flex' }}>
-                    <Image style={editPostStyles.accountAvatar} source={require('../assets/image/default_avatar.png')}></Image>
-                </View>
-                <View style={{ display: 'flex' }}>
-                    <View style={{borderWidth: 0}}>
-                        <Text style={{ fontWeight: 'bold', color: variables.black, fontSize: 18, marginTop: 18, borderWidth: 0}}>{postData?.user?.name ? postData.user.name: 'Facebook User'}</Text>
-                        {emotion && (<>
-                            <View style={{borderWidth: 0}}>
-                                <Text style={{ fontWeight: 'bold', color: variables.black, fontSize: 16 }}>
-                                    <Text style={{ fontWeight: '400', color: variables.black, fontSize: 16, marginTop: 18 }}>- Đang </Text>
-                                    <Image source={emotion.url} style={{width: 20, height: 20}}></Image>
-                                    <Text style={{ fontWeight: '400', color: variables.black, fontSize: 16, marginTop: 18 }}> cảm thấy </Text>
-                                    <Text style={{fontWeight: 'bold', color: variables.black, fontSize: 16}}>{emotion.status}</Text>
-                                </Text>
+            <ScrollView style={{height: '100%', borderWidth: 0, backgroundColor: 'white'}}>
+                <View style={editPostStyles.accountInfo}>
+                    <View style={{ display: 'flex' }}>
+                        <Image style={editPostStyles.accountAvatar} source={require('../assets/image/default_avatar.png')}></Image>
+                    </View>
+                    <View style={{ display: 'flex' }}>
+                        <View style={{borderWidth: 0}}>
+                            <Text style={{ fontWeight: 'bold', color: variables.black, fontSize: 18, marginTop: 18, borderWidth: 0}}>{postData?.user?.name ? postData.user.name: 'Facebook User'}</Text>
+                            {emotion && (<>
+                                <View style={{borderWidth: 0}}>
+                                    <Text style={{ fontWeight: 'bold', color: variables.black, fontSize: 16 }}>
+                                        <Text style={{ fontWeight: '400', color: variables.black, fontSize: 16, marginTop: 18 }}>- Đang </Text>
+                                        <Image source={emotion.url} style={{width: 20, height: 20}}></Image>
+                                        <Text style={{ fontWeight: '400', color: variables.black, fontSize: 16, marginTop: 18 }}> cảm thấy </Text>
+                                        <Text style={{fontWeight: 'bold', color: variables.black, fontSize: 16}}>{emotion.status}</Text>
+                                    </Text>
+                                </View>
+                            </>
+                            )}
+                        </View>
+
+                        <View style={editPostStyles.showMode}>
+                            <View>
+                                <Image source={require('../assets/image/public_icon.png')} style={editPostStyles.publicLogo}></Image>
                             </View>
-                        </>
-                        )}
-                    </View>
-
-                    <View style={editPostStyles.showMode}>
-                        <View>
-                            <Image source={require('../assets/image/public_icon.png')} style={editPostStyles.publicLogo}></Image>
+                            <View>
+                                <Text>Công khai</Text>
+                            </View>
                         </View>
-                        <View>
-                            <Text>Công khai</Text>
-                        </View>
-                    </View>
 
+                    </View>
                 </View>
-            </View>
 
 
-            <View style={editPostStyles.inputZone}>
-                <TextInput multiline={true} placeholder='Bạn đang nghĩ gì?'
-                    placeholderTextColor={variables.gray} style={{...editPostStyles.input, fontSize: inputFontSize, marginRight: 15}}
-                    onChangeText={handleTextChange} value={input}
-                ></TextInput>
-            </View>
+                <View style={editPostStyles.inputZone}>
+                    <TextInput multiline={true} placeholder='Bạn đang nghĩ gì?'
+                        placeholderTextColor={variables.gray} style={{...editPostStyles.input, fontSize: inputFontSize, marginRight: 15, marginBottom: 20}}
+                        onChangeText={handleTextChange} value={input}
+                    ></TextInput>
+                </View>
 
 
-            {!keyboardVisible && (<View>
-                <TouchableOpacity style={editPostStyles.option}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', height: 380, borderWidth: 0, borderColor: 'red', marginHorizontal: 5, marginBottom: 5}}>
+
+                    <View style={{ flexDirection: 'column', justifyContent: 'space-between', height: '100%', borderWidth: 0, width: '49.6%', paddingHorizontal: 0}}>
+                        <View style={{ height: '49.6%' }}>
+                            <Image source={pickedImages.length > 0 ? (pickedImages[0] ? {uri: pickedImages[0].uri} : require('../assets/fb1.png')) : require('../assets/fb1.png')} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
+                            <TouchableOpacity style={{ position: 'absolute', top: 0, right: 0 }} onPress={() => { deleteImage(0) }}>
+                                <IconAntDesign name="close" size={20} color="white" />
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={{ height: '49.6%'  }}>
+                            <Image source={pickedImages.length > 0 ? (pickedImages[1] ? {uri: pickedImages[1].uri} : require('../assets/fb1.png')) : require('../assets/fb1.png')} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
+                            <TouchableOpacity style={{ position: 'absolute', top: 0, right: 0 }} onPress={() => { deleteImage(1) }}>
+                                <IconAntDesign name="close" size={20} color="white" />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
+                    <View style={{ flexDirection: 'column', justifyContent: 'space-between', height: '100%', borderWidth: 0, width: '49.6%' }}>
+                        <View style={{ height: '49.6%' }}>
+                            <Image source={pickedImages.length > 0 ? (pickedImages[2] ? {uri: pickedImages[2].uri} : require('../assets/fb1.png')) : require('../assets/fb1.png')} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
+                            <TouchableOpacity style={{ position: 'absolute', top: 0, right: 0 }} onPress={() => { deleteImage(2) }}>
+                                <IconAntDesign name="close" size={20} color="white" />
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={{ height: '49.6%'  }}>
+                            <Image source={pickedImages.length > 0 ? (pickedImages[3] ? {uri: pickedImages[3].uri} : require('../assets/fb1.png')) : require('../assets/fb1.png')} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
+                            <TouchableOpacity style={{ position: 'absolute', top: 0, right: 0 }} onPress={() => { deleteImage(3) }}>
+                                <IconAntDesign name="close" size={20} color="white" />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+
+            </ScrollView>
+
+            {!keyboardVisible && (<View style={{marginTop: 'auto', backgroundColor: 'white'}}>
+                <TouchableOpacity style={editPostStyles.option} onPress={pickImage}>
                     <View style={{ margin: 10, display: 'flex', flexDirection: 'row' }}>
                         <Image source={require('../assets/image/gallery_icon.png')} style={{ width: 35, height: 35, marginRight: 15 }}></Image>
                         <Text style={{ fontSize: 18, marginTop: 3 }}>Ảnh/video</Text>
@@ -243,13 +318,15 @@ export const EditPostPage = ({navigation, route}) => {
                     justifyContent: 'space-around',
                     position: 'absolute',
                     top: Dimensions.get('window').height - keyboardHeight,
-                    transform: [{ translateY: -60 }],
+                    transform: [{ translateY: -50 }],
                     paddingLeft: 30,
                     paddingRight: 30,
                     paddingTop: 10,
                     paddingBottom: 10,
                     borderTopColor: variables.lightGray,
-                    borderTopWidth: 1
+                    borderTopWidth: 0,
+                    backgroundColor: 'white',
+                    transparent: false
                 }}>
 
                     <TouchableOpacity onPress={pickImage}>
@@ -258,7 +335,7 @@ export const EditPostPage = ({navigation, route}) => {
                     <TouchableOpacity onPress={showEmotionModal}>
                         <Image source={require('../assets/image/smile_icon.png')} style={{ width: 35, height: 35, marginRight: 15 }}></Image>
                     </TouchableOpacity>
-                </View>
+                </View> 
             )}
 
         </View>
@@ -340,7 +417,7 @@ const editPostStyles = StyleSheet.create({
         marginRight: 15,
         marginLeft: 15,
         marginTop: 10,
-        height: '45%'
+        // height: '45%'
     },
     input: {
         fontSize: 24,

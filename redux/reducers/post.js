@@ -66,6 +66,7 @@ export default function postsReducers(state = globalState.posts, current_action)
           data: {
             ...state.data,
             posts: state.data.posts.map((post) => {
+                console.log('payload in update post reducer: ', current_action.payload)
                 if (post.id === current_action.payload.id) {
                     return {
                         ...post,

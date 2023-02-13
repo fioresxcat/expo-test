@@ -27,18 +27,27 @@ export const getPosts = async (payload) => {
 
 
 export const updatePost = async (payload) => {
+    console.log('updataPost api called with payload: ', payload)
     const id = payload.id
     const status = payload.status
     const described = payload.described
+    const listDelID = JSON.stringify(payload.listDelID)
+    const listNewImages = payload.listNewImages
+    
+    const url = `${host}/post/edit_post?token=${mytoken}&id=${id}&status=${status}&described=${described}&image_del=${listDelID}`
+    const formData = new FormData();
+    for (let i = 0; i < listNewImages.length; i++) {
+        formData.append('image', {
+            uri: listNewImages[i].uri,
+            type: 'image/jpeg',
+            name: `image${i}.jpg`
+        });
+    }
 
-    const url = `${host}/post/edit_post?token=${mytoken}&id=${id}&status=${status}&described=${described}`
     try {
         const response = await fetch(url, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload)
+            body: listNewImages.length > 0 ? formData : JSON.stringify({})
         });
         const data = await response.json()
         console.log('response from update post api: ', data)
