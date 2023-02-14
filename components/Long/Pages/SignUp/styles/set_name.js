@@ -30,7 +30,7 @@ module.exports = StyleSheet.create({
     },
     input: {
         height: 60,
-        width: 175,
+        width: 165,
         borderWidth: 1,
         borderColor: variables.lightGray,
         borderRadius: 5,
@@ -39,7 +39,7 @@ module.exports = StyleSheet.create({
     },
     inputError: {
         height: 60,
-        width: 175,
+        width: 165,
         borderWidth: 1,
         borderColor: 'red',
         borderRadius: 5,
@@ -48,7 +48,7 @@ module.exports = StyleSheet.create({
     },
     inputErrorFocus: {
         height: 60,
-        width: 175,
+        width: 165,
         borderWidth: 2,
         borderColor: 'red',
         borderRadius: 5,
@@ -58,7 +58,7 @@ module.exports = StyleSheet.create({
     },
     inputFocus: {
         height: 60,
-        width: 175,
+        width: 165,
         borderWidth: 2,
         borderColor: variables.blue,
         borderRadius: 5,

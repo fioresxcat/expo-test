@@ -33,7 +33,7 @@ const SetName = ({ navigation }) => {
         setLastName(value)
     }
 
-    const specialLetter = /[!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?*$\s\W|]+$/
+    const specialLetter = /^[a-zA-Z][a-zA-Z_ ]*$/
 
     const checkSpecialLetter = (name) => {
         if(name.match(specialLetter)) {
@@ -63,7 +63,10 @@ const SetName = ({ navigation }) => {
         else if (firstName.length <= 2 || lastName.length <= 2) {
             setError('Tên hoặc họ trên Facebook không được quá ngắn.')
         }
-        else if (checkSpecialLetter(firstName) || checkSpecialLetter(lastName) || checkName(firstName) === firstName.length || checkName(lastName) === lastName.length) {
+        else if (firstName.length >= 15 || lastName.length >= 15) {
+            setError('Tên hoặc họ trên Facebook không được quá dài.')
+        }
+        else if (!checkSpecialLetter(firstName) || !checkSpecialLetter(lastName) || checkName(firstName) === firstName.length || checkName(lastName) === lastName.length) {
             setError('Chúng tôi yêu cầu mọi người lấy tên thường dùng hàng ngày, tên bạn bè hay gọi để dùng trên Facebook.')
         }
         else {
