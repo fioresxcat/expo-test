@@ -80,6 +80,21 @@ export default function postsReducers(state = globalState.posts, current_action)
           }
         };
     
+    case getType(actions.addPost.addPostSuccess):
+        const currentPosts = state.data.posts
+        const newSavedPost = current_action.payload
+        console.log('newSavedPost in addPostSuccess', newSavedPost)
+        // add newSavedPost to the beginning of the array
+        const updatedPosts = [newSavedPost, ...currentPosts]
+        return {
+            ...state,
+            data: {
+              ...state.data,
+              posts: updatedPosts
+            }
+        };
+
+    
     case getType(actions.deletePost.deletePostSuccess):
         const deletedPostID = current_action.payload.postID
         return {

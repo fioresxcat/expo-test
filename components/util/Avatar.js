@@ -3,18 +3,20 @@ import React from 'react'
 import styled from 'styled-components/native'
 
 const Container = styled.View`
-	width: 45px;
-	height: 45px;
+	width: 50px;
+	height: 50px;
 	position: relative;
-	marginLeft: 10px;
+	marginLeft: 5px;
+	borderWidth: 0;
+	alignItems: center;
+	justifyContent: flex-start;
 `
 const User = styled.Image`
-	width: 35px;
-	height: 35px;
-	border-radius: 20px;
-	border-color: #1777f2;
-	border-width: ${props => (props.story ? '3px' : 0)};
-    marginVertical: 0px;
+	width: 43px;
+	height: 43px;
+	border-radius: 25px;
+	border-color: ${props => (props.story ? '#1777f2' : '#dbdcd9')};
+	border-width: ${props => (props.story ? '3px' : '1px')};
     resize-mode: contain;
 `
 const UserActive = styled.View`
@@ -32,7 +34,7 @@ const UserActive = styled.View`
 const Avatar = ({ source, online, story }) => {
 	return (
 		<Container>
-			<User source={source} story={story} />
+			<User source={source} story={null} />
 			{online && <UserActive />}
 		</Container>
 	)

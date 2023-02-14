@@ -7,7 +7,11 @@ export function* getPostsSaga(current_action) {
     try {
       const data = yield call(postApi.getPosts, current_action.payload); // call api after action is dispatched by useDispatch() in componenta
       console.log('data here: ', data)
-      yield put(actions.getPosts.getPostsSuccess(data)); // dispatch action to reducer
+      if (data.code != "1000") {
+          yield put(actions.getPosts.getPostsFailure(data)); // dispatch action to reducer
+      } else {
+          yield put(actions.getPosts.getPostsSuccess(data)); // dispatch action to reducer
+      }
     } catch(err) {
       console.log('error happen, calling getpostfailure')
       yield put(actions.getPosts.getPostsFailure(err)); 
@@ -39,6 +43,22 @@ export function* updatePost(current_action) {
       console.log('error happen, calling updatepostfailure: ', err)
       yield put(actions.updatePost.updatePostFailure(err)); 
     }
+}
+
+export function* addPost(current_action) {
+    console.log('add post saga hereeeeeeeeeeeeeeeeeeeeeeeeeee')
+    try {
+      const data = yield call(postApi.addPost, current_action.payload); // call api after action is dispatched by useDispatch() in componenta
+      if (data.code != "1000") {
+        yield put(actions.addPost.addPostFailure(data.data)); // dispatch action to reducer
+    } else {
+        yield put(actions.addPost.addPostSuccess(data.data)); // dispatch action to reducer
+    }
+    } catch(err) {
+      console.log('error happen, calling addpostfailure')
+      yield put(actions.addPost.addPostFailure(err)); 
+    }
+
 }
 
 export function* deletePost(current_action) {

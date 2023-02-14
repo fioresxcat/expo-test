@@ -1,4 +1,4 @@
-import { getPosts, getMorePosts, updatePost, deletePost, reportPost, likePost } from "./post";
+import { getPosts, getMorePosts, updatePost, deletePost, reportPost, likePost, addPost } from "./post";
 import {signUp, login, logout, checkVerifyCode, getVerifyCode, changeInfoAfterSignUp} from "./auth";
 
 export const getType = (reduxAction) => {
@@ -12,7 +12,7 @@ export const actions = {
     deletePost,
     reportPost,
     likePost,
-    
+    addPost,
 
     signUp,
     login,

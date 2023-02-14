@@ -12,6 +12,8 @@ import {
 import { useSelector } from 'react-redux'
 
 import Avatar from './Avatar'
+import { TouchableOpacity } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 
 const Container = styled.TouchableOpacity`
 	width: 100%;
@@ -61,13 +63,26 @@ const BottomDivider = styled.View`
 `
 
 const WhatsOnYourMind = () => {
-	const avatar_url = useSelector(state => state.auth.authData.avatar_url)
+	const username = useSelector(state => state.auth.authData.data.username)
+	const userAvatarURI = useSelector(state => state.auth.authData.data.avatar)
+	const navigation = useNavigation()
+
+	const moveToAddPost = () => {
+		navigation.navigate('AddPostPage', {
+			userData: {
+				name:  username,
+				userAvatarURI: userAvatarURI
+			}
+		})
+	}
 	return (
 			<Container>
 				<Row>
-					<Avatar source={avatar_url ? {uri: avatar_url} : require('../Long/assets/image/default_avatar.png')} online={true} story={true} />
+					<Avatar source={userAvatarURI ? {uri: userAvatarURI} : require('../Long/assets/image/default_avatar.png')} online={true} story={false} />
 					<VerticalDivider></VerticalDivider>
-					<Input>Bạn đang nghĩ gì ?</Input>
+					<TouchableOpacity style={{flex: 1}} onPress={moveToAddPost}>
+						<Input>Bạn đang nghĩ gì ?</Input>
+					</TouchableOpacity>
 				</Row>
 			</Container>
 	)

@@ -26,6 +26,41 @@ export const getPosts = async (payload) => {
 }
 
 
+export const addPost = async (payload) => {
+    console.log('addPost api called with payload: ', payload)
+    const status = payload.status
+    const described = payload.described
+    const listNewImages = payload.listNewImages
+    
+    const url = `${host}/post/add_post?token=${payload.mytoken}&status=${status}&described=${described}`
+    const formData = new FormData();
+    for (let i = 0; i < listNewImages.length; i++) {
+        formData.append('image', {
+            uri: listNewImages[i].uri,
+            type: 'image/jpeg',
+            name: `image${i}.jpg`
+        });
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            body: listNewImages.length > 0 ? formData : JSON.stringify({})
+        });
+        const data = await response.json()
+        console.log('response from add post api: ', data)
+
+        if (data.code != "1000") {
+            throw new Error('add post failed')
+        }
+        return data
+    } catch (err) {
+        console.log('error in addPost api: ', err)
+        throw new Error('add post failed')
+    }
+}
+
+
 export const updatePost = async (payload) => {
     console.log('updataPost api called with payload: ', payload)
     const id = payload.id

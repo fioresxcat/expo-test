@@ -44,6 +44,7 @@ import NoteAccount from './components/Long/Pages/SignUp/components/NoteAccount';
 import SaveInfo from './components/Long/Pages/SignUp/components/SaveInfo';
 import EnterPassWord from './components/Long/Pages/SignIn/components/EnterPassword';
 import AddAvatar from './components/Long/Pages/SignUp/components/AddAvatar';
+import { AddPostPage } from './components/AddPostPage';
 
 
 const Stack = createNativeStackNavigator();
@@ -93,6 +94,7 @@ export default function App() {
                 <Stack.Screen name='FriendsRequestList' component={FriendsList}/>
                 <Stack.Screen name='FriendsList' component={FriendsList}/>
                 <Stack.Screen name='FriendsSuggestList' component={FriendsSuggestList}/>
+                <Stack.Screen name='AddPostPage' component={AddPostPage} />
               </Stack.Group>
 
               <Stack.Group screenOptions={{ presentation: 'modal' }}>
