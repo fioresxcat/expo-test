@@ -92,7 +92,7 @@ const EnterPassword = ({ navigation }) => {
                     <Text style={{ fontSize: 16, color: variables.black, marginLeft: 20}}>{authState.authData.data.username}</Text>
                 </View>
                 <TextInput placeholder='Mật khẩu' placeholderTextColor={variables.gray} style={styles.inputFocus}
-                    onChangeText={handlePasswordChange} autoFocus={true}></TextInput>
+                    onChangeText={handlePasswordChange} autoFocus={true} secureTextEntry={true}></TextInput>
                     {passwordError.length>0 && <Text style={{
                 width: '88%', marginLeft: '6%', color: 'red', fontWeight: 'bold', marginBottom: 20}}>{passwordError}</Text>}
                 <TouchableOpacity activeOpacity={0.8} style={styles.signIn} onPress={handleSubmit}>

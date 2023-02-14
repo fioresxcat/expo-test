@@ -139,7 +139,7 @@ const RemoveAccount = ({ navigation }) => {
                 {phoneError.length>0 && <Text style={{
                 width: '86%', marginLeft: '4%', color: 'red', fontWeight: 'bold', marginBottom: 20}}>{phoneError}</Text>}
                 <TextInput placeholder='Mật khẩu' placeholderTextColor={variables.gray} style={focusPassword ? styles.inputFocus : styles.input}
-                    onChangeText={handlePasswordChange} onFocus={handleFocusPassword}></TextInput>
+                    onChangeText={handlePasswordChange} onFocus={handleFocusPassword} secureTextEntry={true}></TextInput>
                 {passwordError.length>0 && <Text style={{
                 width: '88%', marginLeft: '6%', color: 'red', fontWeight: 'bold', marginBottom: 20}}>{passwordError}</Text>}
                 <TouchableOpacity activeOpacity={0.8} style={styles.signIn} onPress={handleSubmit}>
