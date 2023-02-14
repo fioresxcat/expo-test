@@ -41,6 +41,7 @@ import NoteAccount from './components/Long/Pages/SignUp/components/NoteAccount';
 import SaveInfo from './components/Long/Pages/SignUp/components/SaveInfo';
 import EnterPassWord from './components/Long/Pages/SignIn/components/EnterPassword';
 import AddAvatar from './components/Long/Pages/SignUp/components/AddAvatar';
+import { AddPostPage } from './components/AddPostPage';
 
 
 const Stack = createNativeStackNavigator();
@@ -86,6 +87,7 @@ export default function App() {
                 <Stack.Screen name='SaveInfo' component={SaveInfo} />
                 <Stack.Screen name='EnterPassWord' component={EnterPassWord} />
                 <Stack.Screen name='AddAvatar' component={AddAvatar} />
+                <Stack.Screen name='AddPostPage' component={AddPostPage} />
               </Stack.Group>
 
               <Stack.Group screenOptions={{ presentation: 'modal' }}>

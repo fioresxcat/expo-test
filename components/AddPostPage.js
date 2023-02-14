@@ -101,26 +101,24 @@ const EmotionModal = ({ hideEmotionModal, setEmotion, emotionModalVisible }) => 
 }
 
 
-export const EditPostPage = ({navigation, route}) => {
-    const postData = route.params.postData
-    console.log('postdata Image: ', postData.image ? postData.image: null)
-    const listCurrentImageIDProp = postData.image ? postData.image.map(item => {return {id: item.id, uri: item.url}}) : []
-    const [input, setInput] = useState(route.params.postData?.described)
-    const [emotion, setEmotion] = useState(utils.getEmotionFromState(postData?.status ? postData.status : '', emotionData))
+export const AddPostPage = ({navigation, route}) => {
+    const userData = route.params.userData
+    const listCurrentImageIDProp =  []
+    const [input, setInput] = useState('')
+    const [emotion, setEmotion] = useState(utils.getEmotionFromState('', emotionData))
     const [emotionModalVisible, setEmotionModalVisible] = useState(false)
     const [keyboardVisible, setKeyboardVisible] = useState(false);
     const [keyboardHeight, setKeyboardHeight] = useState(0);
     const [buttonDisable, setButtonDisable] = useState(false)
-    const [inputFontSize, setInputFontSize] = useState(editPostStyles.input.fontSize)
+    const [inputFontSize, setInputFontSize] = useState(addPostStyles.input.fontSize)
     const [pickedImages, setPickedImages] = useState(listCurrentImageIDProp)
     const [listImageDelID, setListImageDelID] = useState([])
-    const posterName = postData.author ? (postData.author.username ? postData.author.username : "Facebook User") : "Facebook User"
-    const posterAvatarURI = postData.author ? (postData.author.avatar ? postData.author.avatar : null) : null
+    const userName = userData.name ? userData.name : ''
+    const userAvatarURI = userData.userAvatarURI ? userData.userAvatarURI : null
     const mytoken = useSelector(state => state.auth.authData.data.token)
 
     const dispatch = useDispatch()
 
-    console.log('postData in edit post page: ', postData)
     useEffect(() => {
         const showKeyboard = Keyboard.addListener('keyboardDidShow', (e) => {
             setKeyboardVisible(true);
@@ -131,14 +129,14 @@ export const EditPostPage = ({navigation, route}) => {
             setKeyboardHeight(0);
         });
 
-        setEmotion(utils.getEmotionFromState(postData?.status ? postData.status : '', emotionData))
-        console.log('emotion after set emotion: ', emotion)
+        // setEmotion(utils.getEmotionFromState(postData?.status ? postData.status : '', emotionData))
+        // console.log('emotion after set emotion: ', emotion)
 
         return () => {
             showKeyboard.remove();
             hideKeyboard.remove();
         };
-    }, [route, postData, navigation]);
+    }, [route, userData, navigation]);
 
     
     const pickImage = async () => {
@@ -165,24 +163,22 @@ export const EditPostPage = ({navigation, route}) => {
     const deleteImage = (index) => {
         const newPickedImages = pickedImages.filter((item, i) => i !== index)
         setPickedImages(newPickedImages)
-        if (pickedImages[index].id) { // co id thi chi co the la anh fetch tu server
-            const newDelList = listImageDelID.concat(pickedImages[index].id)
-            setListImageDelID(newDelList)
-        }
+        // if (pickedImages[index].id) { // co id thi chi co the la anh fetch tu server
+        //     const newDelList = listImageDelID.concat(pickedImages[index].id)
+        //     setListImageDelID(newDelList)
+        // }
     }
 
-    const makePostUpdate = () => {
-        console.log('make post update called..')
-        const newPickedImages = pickedImages.filter(item => !item.id)
+    const makeAddPost = () => {
+        console.log('make add post called..')
+        const newPickedImages = pickedImages
         const updateData = {
-            id: postData.id,
             status: emotion ? (emotion.status ? emotion.status : '') : '',
             described: input,
-            listDelID: listImageDelID,
             listNewImages: newPickedImages,
             mytoken: mytoken
         }
-        dispatch(actions.updatePost.updatePostRequest(updateData))
+        dispatch(actions.addPost.addPostRequest(updateData))
         navigation.goBack()
     }
 
@@ -195,7 +191,7 @@ export const EditPostPage = ({navigation, route}) => {
         if (value.length > 50) {
             setInputFontSize(18)
         } else {
-            setInputFontSize(editPostStyles.input.fontSize)
+            setInputFontSize(addPostStyles.input.fontSize)
         }
     }
 
@@ -213,24 +209,24 @@ export const EditPostPage = ({navigation, route}) => {
         <View>
             <EmotionModal hideEmotionModal={hideEmotionModal} setEmotion={setEmotion} emotionModalVisible={emotionModalVisible}></EmotionModal>
 
-            <View style={editPostStyles.header}>
-                <IconFeather.Button color={variables.black} name='arrow-left' size={25} style={editPostStyles.prevButton} onPress={navigation.goBack}></IconFeather.Button>
-                <Text style={editPostStyles.title}>Chỉnh sửa bài viết</Text>
-                <TouchableOpacity onPress={makePostUpdate} style={buttonDisable ? editPostStyles.addButtonDisable : editPostStyles.addButton}>
+            <View style={addPostStyles.header}>
+                <IconFeather.Button color={variables.black} name='arrow-left' size={25} style={addPostStyles.prevButton} onPress={navigation.goBack}></IconFeather.Button>
+                <Text style={addPostStyles.title}>Thêm bài viết</Text>
+                <TouchableOpacity onPress={makeAddPost} style={buttonDisable ? addPostStyles.addButtonDisable : addPostStyles.addButton}>
                     <Text style={buttonDisable ? { fontWeight: 'bold', fontSize: 16, color: variables.gray } : { fontWeight: 'bold', fontSize: 16, color: 'white' }}>XONG</Text>
                 </TouchableOpacity>
             </View>
 
             <ScrollView style={{height: '100%', borderWidth: 0, backgroundColor: 'white', paddingHorizontal: 12}}>
-                <View style={editPostStyles.accountInfo}>
+                <View style={addPostStyles.accountInfo}>
 
                     <View style={{ display: 'flex', borderWidth: 0, height: 50, width: 50 , marginTop: 14}}>
-                        <Image style={{borderWidth: 1, width: 43, height: 43, borderRadius: 30}} source={posterAvatarURI != null ? {uri: posterAvatarURI} : require('../assets/image/default_avatar.png')}></Image>
+                        <Image style={{borderWidth: 1, width: 43, height: 43, borderRadius: 30}} source={userAvatarURI != null ? {uri: userAvatarURI} : require('../assets/image/default_avatar.png')}></Image>
                     </View>
 
                     <View style={{ display: 'flex', borderWidth: 0, marginLeft: 10}}>
                         <View style={{borderWidth: 0}}>
-                            <Text style={{ fontWeight: 'bold', color: variables.black, fontSize: 18, marginTop: 14, borderWidth: 0}}>{posterName}</Text>
+                            <Text style={{ fontWeight: 'bold', color: variables.black, fontSize: 18, marginTop: 14, borderWidth: 0}}>{userName}</Text>
                             {emotion && (<>
                                 <View style={{borderWidth: 0}}>
                                     <Text style={{ fontWeight: 'bold', color: variables.black, fontSize: 16 }}>
@@ -244,9 +240,9 @@ export const EditPostPage = ({navigation, route}) => {
                             )}
                         </View>
 
-                        <View style={editPostStyles.showMode}>
+                        <View style={addPostStyles.showMode}>
                             <View>
-                                <Image source={require('../assets/image/public_icon.png')} style={editPostStyles.publicLogo}></Image>
+                                <Image source={require('../assets/image/public_icon.png')} style={addPostStyles.publicLogo}></Image>
                             </View>
                             <View>
                                 <Text>Công khai</Text>
@@ -257,9 +253,9 @@ export const EditPostPage = ({navigation, route}) => {
                 </View>
 
 
-                <View style={{...editPostStyles.inputZone, marginLeft: 0, paddingLeft: 0}}>
+                <View style={{...addPostStyles.inputZone, marginLeft: 0, paddingLeft: 0}}>
                     <TextInput multiline={true} placeholder='Bạn đang nghĩ gì?'
-                        placeholderTextColor={variables.gray} style={{...editPostStyles.input, fontSize: inputFontSize, marginRight: 15, marginBottom: 20}}
+                        placeholderTextColor={variables.gray} style={{...addPostStyles.input, fontSize: inputFontSize, marginRight: 15, marginBottom: 20}}
                         onChangeText={handleTextChange} value={input}
                     ></TextInput>
                 </View>
@@ -303,13 +299,13 @@ export const EditPostPage = ({navigation, route}) => {
             </ScrollView>
 
             {!keyboardVisible && (<View style={{marginTop: 'auto', backgroundColor: 'white'}}>
-                <TouchableOpacity style={editPostStyles.option} onPress={pickImage}>
+                <TouchableOpacity style={addPostStyles.option} onPress={pickImage}>
                     <View style={{ margin: 10, display: 'flex', flexDirection: 'row' }}>
                         <Image source={require('../assets/image/gallery_icon.png')} style={{ width: 35, height: 35, marginRight: 15 }}></Image>
                         <Text style={{ fontSize: 18, marginTop: 3 }}>Ảnh/video</Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={editPostStyles.option} onPress={showEmotionModal}>
+                <TouchableOpacity style={addPostStyles.option} onPress={showEmotionModal}>
                     <View style={{ margin: 10, display: 'flex', flexDirection: 'row' }}>
                         <Image source={require('../assets/image/smile_icon.png')} style={{ width: 35, height: 35, marginRight: 15 }}></Image>
                         <Text style={{ fontSize: 18, marginTop: 3 }}>Cảm xúc/Hoạt động</Text>
@@ -349,7 +345,7 @@ export const EditPostPage = ({navigation, route}) => {
     )
 }
 
-const editPostStyles = StyleSheet.create({
+const addPostStyles = StyleSheet.create({
     header: {
         display: 'flex',
         flexDirection: 'row',

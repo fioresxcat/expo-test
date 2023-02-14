@@ -26,6 +26,14 @@ export const updatePost = createActions({
     updatePostFailure: (err) => err,
 });
 
+export const addPost = createActions({
+    addPostRequest: (payload) => payload,
+    
+    addPostSuccess: (payload) => payload,
+
+    addPostFailure: (err) => err,
+});
+
 export const deletePost = createActions({
     deletePostRequest: (payload) => payload,
 

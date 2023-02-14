@@ -305,9 +305,9 @@ const ReportConfirmModal = ({postID, onSubmitReport, selectedTag, posterName, hi
 }
 
 
-const AdvancedModal = ({advancedModalVisible, hideAdvancedModal, showDeleteModal, showReportModal, userID, postData, posterName, posterID}) => {
+const AdvancedModal = ({canEdit, myID, advancedModalVisible, hideAdvancedModal, showDeleteModal, showReportModal, postData, posterName, posterID}) => {
     const navigation = useNavigation()
-
+    
     const blockIcon = 
             <View style={{flexDirection: 'row', justifyContent: 'center', width: 40}}>
               <FontAwesome5 name="user-alt-slash" size={30} color="#333" />
@@ -342,24 +342,28 @@ const AdvancedModal = ({advancedModalVisible, hideAdvancedModal, showDeleteModal
                     <View style={{marginTop: 'auto', backgroundColor: 'white', paddingHorizontal: 20}}>
                         <Divider style={{height:10}}></Divider>
 
-                        {posterID != 0 ? 
+                        {canEdit == "1" ? 
                         <TouchableOpacity onPress={() => {hideAdvancedModal(); showDeleteModal()}}>
                             <ImageBesideText line1_text={`Xóa bài viết`} line2_text='Xóa bài viết này khỏi trang cá nhân của bạn' icon={deleteIcon}></ImageBesideText>
                         </TouchableOpacity> : null}
 
-                        {posterID != 0 ? 
+                        {canEdit == "1" ? 
                         <TouchableOpacity onPress={() => {navigation.navigate('EditPostPage', {postData}); hideAdvancedModal()}}>
                             <ImageBesideText line1_text={`Sửa bài viết`} line2_text='Chỉnh sửa bài viết này' icon={editIcon}></ImageBesideText>
                         </TouchableOpacity> : null}
-
-                        <TouchableOpacity>
+                        
+                        {posterID != myID  ?
+                            <TouchableOpacity>
                             <ImageBesideText line1_text={`Ẩn tất cả từ ${posterName}`} line2_text='Không xem bài viết từ người này nữa' icon={blockIcon}></ImageBesideText>
-                        </TouchableOpacity>
+                            </TouchableOpacity> : null
+                        }
                         <Divider style={{height:10}}></Divider>
-
-                        <TouchableOpacity onPress={() => {hideAdvancedModal(); showReportModal()}}>
-                            <ImageBesideText line1_text={`Báo cáo bài viết`} line2_text='' icon={reportIcon}></ImageBesideText>
-                        </TouchableOpacity>
+                        
+                        {posterID != myID ?
+                            <TouchableOpacity onPress={() => {hideAdvancedModal(); showReportModal()}}>
+                                <ImageBesideText line1_text={`Báo cáo bài viết`} line2_text='' icon={reportIcon}></ImageBesideText>
+                            </TouchableOpacity> : null
+                        }
                         <Divider style={{height:10}}></Divider>
                     </View>
 
@@ -380,12 +384,8 @@ const SinglePost = (postData) => {
     const [reportModalVisible, setReportModalVisible] = useState(false);
     const [reportConfirmModalVisible, setReportConfirmModalVisible] = useState(false);
     const [selectedTag, setSelectedTag] = useState('');
-    const user = {
-        id: myID,
-        name: 'fioresxcat'
-    }
     const navigation = useNavigation()
-    const posterName = postData.author?.name ? postData.author.name : 'facebook user'
+    const posterName = postData.author?.username ? postData.author.username : 'facebook user'
     const posterID = postData.author?.id ? postData.author.id : -1
     const postID = postData.id ? postData.id : -1
     const lastModified = postData.created ? utils.getTimeDifference(postData.created) : ''
@@ -394,19 +394,23 @@ const SinglePost = (postData) => {
     const avatarURL = postData.author ? postData.author.avatar : '../../assets/fb1.png'
     const likeText = utils.getLikeText(postData.likedUserNames)
     const [displayLikeText, setDisplayLikeText] = useState(likeText)
-    const numComment = postData.comment ? postData.comment : 0
+    const numComment = postData.comment ? postData.comment : "0"
     const [displayNumComment, setDisplayNumComment] = useState(numComment)
     const isLiked = postData.is_liked ? postData.is_liked : false
     const [displayIsLiked, setDisplayIsLiked] = useState(isLiked)
     const emotion = utils.getEmotionFromState(postData?.status ? postData.status : '', emotionData)
     const postImage = postData.image ? postData.image.map(item => {return {id: item.id, uri: item.url}}) : []
+    const canEdit = postData.can_edit
+    const canComment = postData.can_comment
     const mytoken = useSelector(state => state.auth.authData.data.token)
+    const myID = useSelector(state => state.auth.authData.data.id)
+    const myName = useSelector(state => state.auth.authData.data.username)
 
     const maxPostCharacter = 20
     const dispatch = useDispatch()
 
-    console.log('emotion: ', emotion)
-    console.log('postImage 0: ', postImage[0])
+    // console.log('emotion: ', emotion)
+    // console.log('postImage 0: ', postImage[0])
     useEffect(() => {
         if (postContent.length > maxPostCharacter) {
             setDisplayPostContent(postContent.substring(0, maxPostCharacter) + '...')
@@ -438,13 +442,13 @@ const SinglePost = (postData) => {
             return null
         } else if (postImage.length == 1) {
             return (
-                <TouchableOpacity>
+                <TouchableOpacity style={{marginHorizontal: 7, borderWidth: 1}}>
                     <Image style={{marginTop: 9, width: '100%', height: 300, resizeMode: 'cover'}} source={{uri: postImage[0].uri}}></Image>
                 </TouchableOpacity>
             )
         } else if (postImage.length == 2) {
             return (
-                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}}>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, marginHorizontal: 7}}>
                     <TouchableOpacity style={{width: '49.6%'}}>
                         <Image style={{width: '100%', height: 300, resizeMode: 'cover'}} source={{uri: postImage[0].uri}}></Image>
                     </TouchableOpacity>
@@ -456,17 +460,17 @@ const SinglePost = (postData) => {
         } else if (postImage.length == 3) {
             // display first image in the first column with 50% width, 2 other images in the second column with 50% width, each of them 50% height
             return (
-                <View style={{flexDirection: 'row', marginTop: 9, justifyContent: 'space-between'}}>
+                <View style={{flexDirection: 'row', marginTop: 9, justifyContent: 'space-between', marginHorizontal: 7}}>
                     <TouchableOpacity style={{width: '49.6%', borderWidth: 1}}>
                         <Image style={{width: '100%', height: 300}} source={{uri: postImage[0].uri}}></Image>
                     </TouchableOpacity>
 
-                    <View style={{width: '49.6%', height: 300, flexDirection: 'column', borderWidth: 1, justifyContent: 'space-between'}}>
-                        <TouchableOpacity style={{height: '49.6%'}}>
+                    <View style={{width: '49.3%', height: 300, flexDirection: 'column', borderWidth: 1, justifyContent: 'space-between'}}>
+                        <TouchableOpacity style={{height: '49.6%', borderWidth: 1}}>
                             <Image style={{width: '100%', height: '100%'}} source={{uri: postImage[1].uri}}></Image>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={{height: '49.6%'}}>
+                        <TouchableOpacity style={{height: '49.3%', borderWidth: 1}}>
                             <Image style={{width: '100%', height: '100%'}} source={{uri: postImage[2].uri}}></Image>
                         </TouchableOpacity>
                     </View>
@@ -474,7 +478,7 @@ const SinglePost = (postData) => {
             )
         } else if (postImage.length == 4) {
             return (
-                <View style={{flexDirection: 'row', marginTop: 9, justifyContent: 'space-between'}}>
+                <View style={{flexDirection: 'row', marginTop: 9, justifyContent: 'space-between', marginHorizontal: 7}}>
                     <View style={{width: '49.6%', height: 300, flexDirection: 'column', justifyContent: 'space-between'}}>
                         <TouchableOpacity style={{height: '49.6%'}}>
                             <Image style={{width: '100%', height: '100%'}} source={{uri: postImage[0].uri}}></Image>
@@ -565,12 +569,12 @@ const SinglePost = (postData) => {
 
             <ReportConfirmModal postID={postID} onSubmitReport={onSubmitReport} selectedTag={selectedTag} setSelectedTag={setSelectedTag} reportConfirmModalVisible={reportConfirmModalVisible} hideReportConfirmModal={hideReportConfirmModal} posterName={posterName}></ReportConfirmModal>
 
-            <AdvancedModal postData={postData} advancedModalVisible={advancedModalVisible} hideAdvancedModal={hideAdvancedModal} posterName={posterName} posterID={posterID} userID={myID} showDeleteModal={showDeleteModal} showReportModal={showReportModal}></AdvancedModal>
+            <AdvancedModal canEdit={canEdit} myID={myID} postData={postData} advancedModalVisible={advancedModalVisible} hideAdvancedModal={hideAdvancedModal} posterName={posterName} posterID={posterID} userID={myID} showDeleteModal={showDeleteModal} showReportModal={showReportModal}></AdvancedModal>
 
             <Header style={{borderWidth: 0, paddingTop: 0, alignItems: 'center'}}>
                 <Row style={{borderWidth: 0, paddingTop: 0}}>
 
-                    <Avatar source={avatarURL === '../../assets/fb1.png' ? require('../../assets/fb1.png') : { uri: avatarURL }}/>
+                    <Avatar source={avatarURL === '../../assets/image/default_avatar.png' ? require('../../assets/image/default_avatar.png') : { uri: avatarURL }}/>
 
                     <View style={{ paddingLeft: 5, borderWidth: 0, marginTop:0, paddingTop: 3}}>
                         <User style={{fontSize: 17}}>{posterName}</User>
