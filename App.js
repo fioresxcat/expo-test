@@ -9,7 +9,7 @@ import createSagaMiddleware from 'redux-saga'
 import { Provider } from 'react-redux';
 import rootReducer from './redux/reducers';
 
-
+import LogOut from './components/util/LogOut';
 import Landing from './components/Landing';
 import Report from './components/Report';
 import DiscardChanges from './components/DiscardChanges';
@@ -23,6 +23,9 @@ import mySaga from './redux/saga';
 import { EditPostPage } from './components/EditPostPage';
 import { SlideUpTransition } from './constant';
 
+import FriendsList from './components/util/FriendsList';
+import FriendsRequestList from './components/util/FriendsRequestList';
+import FriendsSuggestList from './components/util/FriendsSuggestList';
 import RemoveAccount from './components/Long/Pages/SignIn/components/RemoveAccount';
 import SignInLoading from './components/Long/Pages/SignIn/components/SignInLoading';
 import SaveAccount from './components/Long/Pages/SignIn/components/SaveAccount';
@@ -86,6 +89,10 @@ export default function App() {
                 <Stack.Screen name='SaveInfo' component={SaveInfo} />
                 <Stack.Screen name='EnterPassWord' component={EnterPassWord} />
                 <Stack.Screen name='AddAvatar' component={AddAvatar} />
+                <Stack.Screen name='LogOut' component={LogOut} />
+                <Stack.Screen name='FriendsRequestList' component={FriendsList}/>
+                <Stack.Screen name='FriendsList' component={FriendsList}/>
+                <Stack.Screen name='FriendsSuggestList' component={FriendsSuggestList}/>
               </Stack.Group>
 
               <Stack.Group screenOptions={{ presentation: 'modal' }}>

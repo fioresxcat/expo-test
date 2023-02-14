@@ -7,8 +7,10 @@ import { Octicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import React from 'react';
 
+import FriendsList from './util/FriendsRequestList';
 import AppBar from './util/AppBar';
 import Landing from './Landing';
+import LogOut from './util/LogOut';
 import Feed from './Feed';
 import { useState, useEffect } from 'react';
 import { Animated } from 'react-native';
@@ -45,10 +47,10 @@ export default function HomePage() {
               <Tab.Screen name="Feed" options={options.homeScreen}>
                   {props => <Feed setScrollY={setScrollY} />}
               </Tab.Screen>
-              <Tab.Screen name="Friend" component={Landing} options={options.friendScreen}/>
+              <Tab.Screen name="Friend" component={FriendsList} options={options.friendScreen}/>
               <Tab.Screen name="Video" component={Landing} options={options.videoScreen}/>
               <Tab.Screen name="Notification" component={Landing} options={options.notiScreen}/>
-              <Tab.Screen name="Menu" component={Landing} options={options.menuScreen}/>
+              <Tab.Screen name="Menu" component={LogOut} options={options.menuScreen}/>
           </Tab.Navigator>
       </View>
     );

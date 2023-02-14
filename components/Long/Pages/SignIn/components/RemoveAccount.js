@@ -121,7 +121,7 @@ const RemoveAccount = ({ navigation }) => {
                 phonenumber: phone,
                 password: password
             }))
-            navigation.navigate('SignInLoading')
+            navigation.navigate('SignInLoading', {phone: phone})
         }
     }
 

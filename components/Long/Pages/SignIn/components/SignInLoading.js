@@ -4,9 +4,10 @@ import variables from '../../../BaseStyles/Variables'
 import { useSelector } from 'react-redux'
 import { authState$ } from '../../../../../redux/selectors'
 
-const SignInLoading = ({ navigation }) => {
+const SignInLoading = ({ navigation, route }) => {
+    const { phone } = route.params
     const getAuthData = useSelector(authState$)
-    console.log(getAuthData)
+    //console.log(getAuthData)
 
     const springValue = useRef(new Animated.Value(0)).current;
     Animated.spring(springValue, {
@@ -26,7 +27,7 @@ const SignInLoading = ({ navigation }) => {
         )
     }
 
-    else if (getAuthData.isLoading === false && getAuthData.authData?.response?.data?.code === '9995') {
+    else if (getAuthData.isLoading === false && getAuthData.authData?.response?.data?.details === 'không có user này') {
         return (
             <View>
                 <View style={styles.header}>
@@ -37,6 +38,50 @@ const SignInLoading = ({ navigation }) => {
                         <View style={styles.modal}>
                             <Text style={styles.modalTitle}>Số điện thoại chưa được đăng ký</Text>
                             <Text style={{ color: variables.gray, fontSize: 16, textAlign: 'center' }}>Vui lòng tiến hành đăng nhập lại tài khoản</Text>
+                            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('RemoveAccount')}>
+                                <Text style={{ color: 'white', fontSize: 16, textAlign: 'center', fontWeight: 'bold' }}>Quay lại</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+            </View>
+        )
+    }
+
+    else if (getAuthData.isLoading === false && getAuthData.authData?.response?.data?.details === 'chưa xác thực code verify') {
+        return (
+            <View>
+                <View style={styles.header}>
+                    <Text style={styles.title}>Đang đăng nhập...</Text>
+                </View>
+                <Modal visible={true} transparent={true} animationType='fade'>
+                    <View style={{ height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                        <View style={styles.modal}>
+                            <Text style={styles.modalTitle}>Số điện thoại chưa xác thực mã xác nhận</Text>
+                            <Text style={{ color: variables.gray, fontSize: 16, textAlign: 'center' }}>Vui lòng tiến hành xác thực tài khoản</Text>
+                            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('RemoveAccount', {
+                                phone: phone
+                            })}>
+                                <Text style={{ color: 'white', fontSize: 16, textAlign: 'center', fontWeight: 'bold' }}>Quay lại</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+            </View>
+        )
+    }
+
+    else if (getAuthData.isLoading === false && getAuthData.authData?.response?.data?.details === 'password') {
+        return (
+            <View>
+                <View style={styles.header}>
+                    <Text style={styles.title}>Đang đăng nhập...</Text>
+                </View>
+                <Modal visible={true} transparent={true} animationType='fade'>
+                    <View style={{ height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                        <View style={styles.modal}>
+                            <Text style={styles.modalTitle}>Mật khẩu sai</Text>
+                            <Text style={{ color: variables.gray, fontSize: 16, textAlign: 'center' }}>Vui lòng nhập lại mật khẩu</Text>
                             <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('RemoveAccount')}>
                                 <Text style={{ color: 'white', fontSize: 16, textAlign: 'center', fontWeight: 'bold' }}>Quay lại</Text>
                             </TouchableOpacity>

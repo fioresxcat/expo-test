@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 import { authState$ } from '../../../../../redux/selectors'
 
 const SaveAccount = ({ navigation }) => {
-    const getAuthData = useSelector(authState$)
+    const authState = useSelector(authState$)
     const [openMoreOptionModal, setOpenMoreOptionModal] = useState(false)
 
     const handleOpenMoreOptionModal = () => {
@@ -30,11 +30,11 @@ const SaveAccount = ({ navigation }) => {
             ></Image>
 
             <View style={styles.accountWrapper}>
-                <TouchableOpacity activeOpacity={0.3} style={{ flexDirection: 'row' }} onPress={() => navigation.navigate('EnterPassword')}>
-                    <Image source={require('../../../assets/image/default_avatar.png')}
+                <TouchableOpacity activeOpacity={0.3} style={{ flexDirection: 'row' }} onPress={() => navigation.navigate('EnterPassWord')}>
+                    <Image source={authState.authData.data.avatar ? {uri: authState.authData.data.avatar } : require('../../../assets/image/default_avatar.png')}
                         style={styles.accountAvatar}
                     ></Image>
-                    <Text style={styles.accountName}>{getAuthData.authData.name}</Text>
+                    <Text style={styles.accountName}>{authState.authData.data.username}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity activeOpacity={0.3} style={styles.moreOption} onPress={handleOpenMoreOptionModal}>
